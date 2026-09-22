@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BallWanne | Football scores</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/assets/index-BVvQrYT-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-dspqGldo.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="intro">
+        <a class="brand" href="/" aria-label="BallWanne home"><span class="brand-mark">B</span> BallWanne</a>
+        <div class="intro-copy">
+          <p class="eyebrow">FOOTBALL, ALL IN ONE PLACE</p>
+          <h1>Every match.<br />Every moment.</h1>
+          <p>Follow fixtures, live scores and league tables from the competitions you love.</p>
+        </div>
+        <p class="footnote">© 2026 BallWanne</p>
+      </section>
+
+      <section class="panel" aria-live="polite">
+        <div id="auth-card">
+          <p class="eyebrow">WELCOME BACK</p>
+          <h2 id="form-title">Sign in to your account</h2>
+          <p class="subtitle" id="form-subtitle">Enter your details to follow the action.</p>
+          <form id="auth-form" novalidate>
+            <div class="field register-only hidden"><label for="name">Name</label><input id="name" name="name" autocomplete="name" placeholder="Your name" /></div>
+            <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required /></div>
+            <div class="field"><label for="password">Password</label><div class="password-wrap"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="At least 8 characters" required /><button type="button" class="show-password" aria-label="Show password">Show</button></div></div>
+            <p id="message" class="message" role="alert"></p>
+            <button id="submit-button" class="submit" type="submit">Sign in <span>→</span></button>
+          </form>
+          <p class="switch-copy" id="switch-copy">New to BallWanne? <button id="switch-mode" type="button">Create an account</button></p>
+        </div>
+      </section>
+    </main>
+    <section id="dashboard" class="dashboard hidden">
+      <aside class="sidebar">
+        <a class="brand" href="/"><span class="brand-mark">B</span> BallWanne</a>
+        <nav aria-label="Main navigation">
+          <a class="active" href="#home"><span>⌂</span> Home</a>
+          <a href="#fixtures"><span>▣</span> Fixtures</a>
+          <a href="#standings"><span>≡</span> Standings</a>
+        </nav>
+        <div class="account-box">
+          <div class="avatar" id="avatar"></div>
+          <div><strong id="sidebar-name"></strong><small id="sidebar-email"></small></div>
+          <button id="logout" class="logout-button" type="button">Sign out</button>
+        </div>
+      </aside>
+      <main class="dashboard-content" id="home">
+        <header class="dashboard-header"><div><p class="eyebrow">MATCH CENTRE</p><h2 id="welcome-name"></h2><p class="dashboard-subtitle">Your football world at a glance.</p></div><button class="add-button" type="button">⚽ Live scores</button></header>
+        <section class="hero-card"><div><p class="eyebrow">THE BEAUTIFUL GAME</p><h3>Never miss<br />a kick-off.</h3><a class="play-button" href="#fixtures">View fixtures</a></div><div class="pitch" aria-hidden="true"><i></i></div></section>
+        <section class="library" id="fixtures"><div class="section-title"><div><p class="eyebrow">UPCOMING & LIVE</p><h3>Fixtures</h3></div><span id="match-count"></span></div><div id="match-list" class="track-list"><p class="loading">Loading fixtures…</p></div></section>
+        <section class="library" id="standings"><div class="section-title"><div><p class="eyebrow">LEAGUE TABLE</p><h3>Standings</h3></div><select id="league-select" aria-label="Select league"><option value="">Select a league</option></select></div><div id="standing-list" class="track-list"><div class="empty-state"><span>≡</span><h4>Select a league</h4><p>Choose a competition to view its table.</p></div></div></section>
+      </main>
+    </section>
+  </body>
+</html>
