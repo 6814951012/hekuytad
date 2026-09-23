@@ -189,8 +189,8 @@ button, input { font: inherit; }
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 30px;
+  grid-template-columns: 1.2fr 0.8fr 0.65fr;
+  gap: 28px;
   align-items: center;
   min-height: 520px;
   padding: 48px 28px 78px;
@@ -202,6 +202,110 @@ button, input { font: inherit; }
 }
 
 .hero-copy { position: relative; z-index: 1; }
+
+.sponsor-panel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+
+.sponsor-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(270px, 100%);
+  text-decoration: none;
+  color: var(--white);
+  background: linear-gradient(180deg, rgba(10, 17, 22, 0.85), rgba(23, 14, 12, 0.8));
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px;
+  padding: 14px;
+  box-shadow: 0 24px 40px rgba(11, 13, 19, 0.7);
+  animation: sponsorFlicker 1.8s ease-in-out infinite alternate;
+}
+
+.sponsor-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(215,255,82,0.8), rgba(255,121,88,0.7), rgba(143,247,191,0.8));
+  filter: blur(16px);
+  opacity: 0.45;
+  z-index: -1;
+}
+
+.sponsor-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(215,255,82,0.16);
+  border: 1px solid rgba(215,255,82,0.3);
+  color: var(--lime);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.sponsor-frame {
+  margin: 12px 0 10px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.02);
+}
+
+.sponsor-img {
+  min-height: 310px;
+  background-image:
+    linear-gradient(180deg, rgba(15,17,18,0.15), rgba(15,17,18,0.45)),
+    url('https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=900&q=80');
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.02);
+}
+
+.sponsor-copy {
+  display: grid;
+  gap: 5px;
+  padding: 8px 2px 2px;
+}
+
+.sponsor-copy strong {
+  font-size: 1.1rem;
+  letter-spacing: -0.04em;
+}
+
+.sponsor-copy span {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.75rem;
+}
+
+@keyframes sponsorFlicker {
+  0% {
+    box-shadow: 0 0 0 rgba(255,255,255,0), 0 8px 24px rgba(11,13,19,0.52);
+    transform: translateY(0px) scale(1);
+    opacity: 0.94;
+  }
+  20% {
+    box-shadow: 0 0 10px rgba(215,255,82,0.22), 0 12px 30px rgba(11,13,19,0.52);
+    transform: translateY(-2px) scale(1.01);
+    opacity: 1;
+  }
+  40% {
+    box-shadow: 0 0 18px rgba(255,121,88,0.28), 0 16px 36px rgba(11,13,19,0.52);
+    transform: translateY(0px) scale(1);
+    opacity: 0.98;
+  }
+  100% {
+    box-shadow: 0 0 22px rgba(143,247,191,0.3), 0 18px 42px rgba(11,13,19,0.65);
+    transform: translateY(-1px) scale(1.015);
+    opacity: 1;
+  }
+}
 
 .eyebrow {
   margin: 0 0 18px;
@@ -1066,6 +1170,10 @@ footer {
   .hero {
     grid-template-columns: 1fr;
     padding-bottom: 100px;
+  }
+
+  .sponsor-panel {
+    justify-content: flex-start;
   }
 
   .betting-panel {
