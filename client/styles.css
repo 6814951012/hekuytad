@@ -257,181 +257,21 @@ button, input { font: inherit; }
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.12);
-  background: linear-gradient(180deg, #1d8d46 0%, #0f7a3d 18%, #2bac58 100%);
+  background: url('./assets/player-poster.svg') center/cover no-repeat;
 }
 
 .sponsor-poster::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.18));
+  background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.22));
 }
 
-.poster-player {
-  position: absolute;
-  left: 50%;
-  bottom: -8px;
-  transform: translateX(-50%);
-  width: 220px;
-  height: 260px;
-}
-
-.player-head {
-  position: absolute;
-  left: 50%;
-  top: 18px;
-  transform: translateX(-50%);
-  width: 88px;
-  height: 96px;
-  border-radius: 38% 38% 42% 42%;
-  background: #f0c7a6;
-  box-shadow: inset 0 -8px 0 rgba(0,0,0,0.04);
-}
-
-.player-head::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -18px;
-  transform: translateX(-50%);
-  width: 98px;
-  height: 28px;
-  border-radius: 40px 40px 16px 16px;
-  background: #f1db32;
-}
-
-.player-head::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 16px;
-  transform: translateX(-50%);
-  width: 52px;
-  height: 20px;
-  border-radius: 16px;
-  background: rgba(0,0,0,0.15);
-  box-shadow: -18px 0 0 rgba(0,0,0,0.1), 18px 0 0 rgba(0,0,0,0.1);
-}
-
-.player-body {
-  position: absolute;
-  left: 50%;
-  top: 104px;
-  transform: translateX(-50%);
-  width: 156px;
-  height: 132px;
-  border-radius: 18px 18px 28px 28px;
-  background: linear-gradient(180deg, #ffffff 0%, #ecf2ef 100%);
-  border: 6px solid rgba(12,85,52,0.7);
-  box-shadow: inset 0 0 0 4px rgba(19,95,49,0.15);
-}
-
-.player-body::before,
-.player-body::after {
-  content: "";
-  position: absolute;
-  width: 38px;
-  height: 90px;
-  top: 28px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #d5dfe0 0%, #e0e8eb 100%);
-}
-
-.player-body::before { left: -8px; }
-.player-body::after { right: -8px; }
-
-.player-arm {
-  position: absolute;
-  top: 116px;
-  width: 24px;
-  height: 118px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #f9f9f9 0%, #dfe9ea 100%);
-}
-
-.player-arm.left {
-  left: 26px;
-  transform: rotate(28deg);
-}
-
-.player-arm.right {
-  right: 26px;
-  transform: rotate(-28deg);
-}
-
-.poster-badge {
-  position: absolute;
-  left: 18px;
-  top: 16px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  display: grid;
-  place-items: center;
-  border: 2px solid rgba(255,255,255,0.28);
-}
-
-.crest {
-  display: block;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f6ecb0, #d9aa2a);
-  position: relative;
-}
-
-.crest::before {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border: 2px solid rgba(78,57,18,0.7);
-  border-radius: 50%;
-}
-
-.poster-copy {
-  position: absolute;
-  right: 18px;
-  top: 42px;
-  text-align: right;
-  color: #ffffff;
-  text-shadow: 0 4px 18px rgba(8,36,19,0.35);
-}
-
-.poster-copy span {
-  display: block;
-  font-size: 0.82rem;
-  letter-spacing: 0.18em;
-  font-weight: 700;
-}
-
-.poster-copy strong {
-  display: block;
-  font-size: 2.05rem;
-  letter-spacing: -0.06em;
-  line-height: 0.9;
-}
-
+.poster-player,
+.poster-badge,
+.poster-copy,
 .poster-stats {
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  bottom: 18px;
-  display: grid;
-  gap: 4px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(9, 47, 25, 0.22);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-.poster-stats p {
-  margin: 0;
-  font-size: 0.6rem;
-  line-height: 1.35;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.96);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  display: none;
 }
 
 @keyframes sponsorFlicker {
