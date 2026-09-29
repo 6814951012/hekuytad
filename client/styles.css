@@ -257,7 +257,7 @@ button, input { font: inherit; }
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.12);
-  background: url('./assets/player-poster.svg') center/cover no-repeat;
+  background: url('./assets/player-poster.jpg') center 38%/cover no-repeat;
 }
 
 .sponsor-poster::before {
