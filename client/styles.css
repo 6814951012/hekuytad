@@ -889,6 +889,7 @@ button, input { font: inherit; }
 
 .betting-panel {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
@@ -905,10 +906,70 @@ button, input { font: inherit; }
   color: rgba(255,255,255,0.8);
 }
 
+.wallet-tools {
+  display: grid;
+  gap: 14px;
+  justify-items: end;
+}
+
+.wallet-balance-block {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+}
+
+.wallet-balance-block strong {
+  color: var(--lime);
+  font-size: 1.8rem;
+}
+
+.wallet-balance-block > span:last-child {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.82rem;
+}
+
 .betting-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.wallet-history {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: 1 0 100%;
+  gap: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.wallet-history h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.wallet-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wallet-list li {
+  display: grid;
+  gap: 3px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.62);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.wallet-list strong {
+  color: var(--white);
+  font-size: 0.9rem;
 }
 
 footer {
@@ -1059,6 +1120,43 @@ footer {
   cursor: pointer;
 }
 
+.bet-footer button:disabled,
+.wallet-tools button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.bet-message {
+  min-height: 1.2em;
+  margin: 0 0 8px !important;
+  color: #ffd0bf !important;
+  font-size: 0.84rem;
+}
+
+.wallet-modal h2 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 0.95;
+}
+
+.top-up-presets {
+  display: flex;
+  gap: 8px;
+}
+
+.top-up-presets button {
+  flex: 1;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.top-up-presets button:hover {
+  border-color: var(--lime);
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1170,6 +1268,9 @@ footer {
     flex-direction: column;
     align-items: flex-start;
   }
+  .wallet-tools { width: 100%; justify-items: start; }
+  .wallet-balance-block { text-align: left; }
+  .betting-actions { justify-content: flex-start; }
 }
 
 @media (max-width: 640px) {
@@ -1187,6 +1288,9 @@ footer {
   .feature-teams { grid-template-columns: 1fr; }
   .score-box { order: -1; }
   .bet-slip { right: 10px; top: 78px; width: calc(100vw - 20px); }
+  .wallet-history { grid-template-columns: 1fr; gap: 20px; }
+  .betting-actions { width: 100%; }
+  .betting-actions button { flex: 1 1 100%; justify-content: center; }
   footer {
     flex-direction: column;
     align-items: flex-start;

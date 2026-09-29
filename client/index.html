@@ -140,7 +140,7 @@
               <span class="divider"></span>
               <span><b>3</b> ยิงเข้ากรอบ</span>
             </div>
-            <button class="bet-match" type="button" data-match="Barcelona vs AC Milan">วางเดิมพันคู่นี้ <span>→</span></button>
+            <button class="bet-match" type="button" data-match="Barcelona vs AC Milan" data-selection="Barcelona ชนะ" data-odds="1.85">Barcelona ชนะ 1.85 <span>→</span></button>
           </article>
 
           <article class="match-card">
@@ -330,12 +330,30 @@
       <section class="betting-panel section-panel" id="betting">
         <div class="betting-copy">
           <p class="eyebrow dark">BETTING HUB</p>
-          <h2>แทง5พอล <em>อัพเดท</em></h2>
-          <p>ติดตามราคาและวางเดิมพันได้ทันที พร้อมระบบล็อกอินจริงที่เชื่อมต่อกับ API ของเซิร์ฟเวอร์</p>
+          <h2>แทง5พอล <em>ทดลอง</em></h2>
+          <p>เลือกคู่บอล วางบิล และจัดการเครดิตทดลองได้ในที่เดียว เครดิตนี้ไม่มีมูลค่าเป็นเงินจริงและถอนออกไม่ได้</p>
         </div>
-        <div class="betting-actions">
-          <button class="primary-button" type="button">เริ่มเดิมพัน</button>
-          <button class="secondary-button" type="button" id="quick-refresh">รีเฟรชราคา</button>
+        <div class="wallet-tools">
+          <div class="wallet-balance-block">
+            <span class="eyebrow dark">เครดิตทดลอง</span>
+            <strong id="wallet-balance">0 เครดิต</strong>
+            <span id="wallet-status" role="status">เข้าสู่ระบบเพื่อใช้ wallet ทดลอง</span>
+          </div>
+          <div class="betting-actions">
+            <button class="primary-button" type="button" id="start-betting">เริ่มเดิมพัน</button>
+            <button class="secondary-button" type="button" id="open-top-up">เติมเครดิตทดลอง</button>
+            <button class="secondary-button" type="button" id="quick-refresh">รีเฟรชราคา</button>
+          </div>
+        </div>
+        <div class="wallet-history">
+          <div>
+            <h3>บิลล่าสุด</h3>
+            <ul id="bet-history" class="wallet-list"><li>เข้าสู่ระบบเพื่อดูบิล</li></ul>
+          </div>
+          <div>
+            <h3>รายการเครดิต</h3>
+            <ul id="wallet-transactions" class="wallet-list"><li>เข้าสู่ระบบเพื่อดูรายการ</li></ul>
+          </div>
         </div>
       </section>
     </main>
@@ -361,12 +379,13 @@
         <label>
           ยอดเดิมพัน
           <div>
-            <input id="stake" type="number" min="0" placeholder="0.00" />
-            <span>THB</span>
+            <input id="stake" type="number" min="1" step="1" placeholder="จำนวนเครดิต" />
+            <span>เครดิต</span>
           </div>
         </label>
-        <p>ยอดรับโดยประมาณ <strong id="return-value">฿0.00</strong></p>
-        <button id="place-bet" type="button">เข้าสู่ระบบเพื่อวางเดิมพัน</button>
+        <p>ยอดรับโดยประมาณ <strong id="return-value">0 เครดิต</strong></p>
+        <p class="bet-message" id="bet-message" role="status" aria-live="polite"></p>
+        <button id="place-bet" type="button" disabled>เลือกคู่เพื่อวางเดิมพัน</button>
       </div>
     </aside>
 
@@ -399,6 +418,28 @@
         </form>
 
         <p class="register-copy" id="auth-switch">ยังไม่มีบัญชี? <button type="button" class="inline-link" id="register-link">สมัครสมาชิกฟรี</button></p>
+      </section>
+    </div>
+
+    <div class="modal-backdrop hidden" id="wallet-modal">
+      <section class="login-modal wallet-modal" aria-modal="true" role="dialog" aria-labelledby="wallet-modal-title">
+        <button class="close-modal" id="close-wallet-modal" type="button" aria-label="ปิดหน้าต่างเติมเครดิต">×</button>
+        <p class="eyebrow dark">DEMO WALLET</p>
+        <h2 id="wallet-modal-title">เติมเครดิต<br /><em>ทดลอง</em></h2>
+        <p class="modal-sub">เครดิตทดลองเท่านั้น ไม่มีการชำระเงินจริงและถอนเงินไม่ได้</p>
+        <form id="top-up-form">
+          <label>
+            จำนวนเครดิต (100–10,000)
+            <input id="top-up-amount" name="amount" type="number" min="100" max="10000" step="100" value="500" required />
+          </label>
+          <div class="top-up-presets" aria-label="เลือกจำนวนเครดิต">
+            <button type="button" data-top-up="100">100</button>
+            <button type="button" data-top-up="500">500</button>
+            <button type="button" data-top-up="1000">1,000</button>
+          </div>
+          <p class="auth-error" id="top-up-error" role="alert" aria-live="polite"></p>
+          <button class="primary-button" type="submit">เติมเครดิตทดลอง</button>
+        </form>
       </section>
     </div>
 

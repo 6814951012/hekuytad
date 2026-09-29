@@ -4,6 +4,7 @@ const trackRoutes = require("./routes/track.route");
 const authRoutes = require("./routes/auth.route");
 const footballRoutes = require("./routes/football.route");
 const blobRoutes = require("./routes/blob.route");
+const walletRoutes = require("./routes/wallet.route");
 const { notFound, errorHandler } = require("./middlewares/error.middleware");
 const app = express();
 // 1. Global middleware
@@ -16,6 +17,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/football", footballRoutes);
 app.use("/api/tracks", trackRoutes);
 app.use("/api/blob", blobRoutes);
+app.use("/api/wallet", walletRoutes);
 // 3. Error handling — must be LAST
 app.use(notFound);
 app.use(errorHandler);
