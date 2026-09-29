@@ -229,32 +229,14 @@
             <p class="eyebrow dark">FROM THE TOUCHLINE</p>
             <h2>ข่าวบอล <em>มาแรง</em></h2>
           </div>
-          <a class="view-all" href="#news">ดูทั้งหมด <span>↗</span></a>
+          <div class="news-heading-actions">
+            <span id="news-updated" class="news-updated">กำลังโหลดข่าว...</span>
+            <a class="view-all" href="https://www.bbc.co.uk/sport/football" target="_blank" rel="noopener noreferrer">ดูทั้งหมดจาก BBC Sport <span>↗</span></a>
+          </div>
         </div>
 
-        <div class="news-grid">
-          <article class="lead-story">
-            <div class="story-image stadium-shot"><span>EXCLUSIVE</span></div>
-            <div class="story-copy">
-              <p>CHAMPIONS LEAGUE • 12 นาทีที่แล้ว</p>
-              <h3>“เกมใหญ่ไม่เคยง่าย” เป๊ปเปิดใจก่อนศึกชี้ชะตา</h3>
-              <a href="#news">อ่านต่อ <span>→</span></a>
-            </div>
-          </article>
-
-          <article class="small-story">
-            <div class="story-image boots-shot"></div>
-            <p>PREMIER LEAGUE • 28 นาทีที่แล้ว</p>
-            <h3>10 ดาวรุ่งที่น่าจับตาในฤดูกาลนี้</h3>
-            <a href="#news">อ่านเรื่องนี้ →</a>
-          </article>
-
-          <article class="small-story">
-            <div class="story-image trophy-shot"></div>
-            <p>TRANSFER TALK • 1 ชั่วโมงที่แล้ว</p>
-            <h3>ดีลเซอร์ไพรส์ที่กำลังจะเกิดก่อนตลาดปิด</h3>
-            <a href="#news">อ่านเรื่องนี้ →</a>
-          </article>
+        <div class="news-grid" id="football-news-grid" aria-live="polite" aria-busy="true">
+          <p class="news-state">กำลังโหลดข่าวฟุตบอลล่าสุดจาก BBC Sport...</p>
         </div>
       </section>
 

@@ -25,6 +25,8 @@ const matchesGrid = document.querySelector('#matches-grid');
 const leagueFilters = document.querySelector('#league-filters');
 const fixtureTicker = document.querySelector('#fixture-ticker');
 const fixtureSeason = document.querySelector('#fixture-season');
+const footballNewsGrid = document.querySelector('#football-news-grid');
+const newsUpdated = document.querySelector('#news-updated');
 let authMode = 'login';
 let walletBalance = 0;
 let walletBusy = false;
@@ -435,6 +437,85 @@ const loadFixtures = async () => {
   }
 };
 
+const newsAge = (publishedAt) => {
+  const published = new Date(publishedAt);
+  if (Number.isNaN(published.getTime())) return 'ข่าวล่าสุด';
+  const minutes = Math.max(0, Math.floor((Date.now() - published.getTime()) / 60000));
+  if (minutes < 60) return `${minutes} นาทีที่แล้ว`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} ชั่วโมงที่แล้ว`;
+  return `${Math.floor(hours / 24)} วันที่แล้ว`;
+};
+
+const makeNewsCard = (article, index) => {
+  const card = document.createElement('article');
+  card.className = index === 0 ? 'lead-story' : 'small-story';
+  const imageLink = document.createElement('a');
+  imageLink.className = `story-image${article.image ? '' : ' no-image'}`;
+  imageLink.href = article.link;
+  imageLink.target = '_blank';
+  imageLink.rel = 'noopener noreferrer';
+  imageLink.setAttribute('aria-label', `อ่านข่าวจาก ${article.source}: ${article.title}`);
+  if (article.image) {
+    const image = document.createElement('img');
+    image.src = article.image;
+    image.alt = '';
+    image.loading = index === 0 ? 'eager' : 'lazy';
+    image.referrerPolicy = 'no-referrer';
+    image.onerror = () => { image.remove(); imageLink.classList.add('no-image'); };
+    imageLink.append(image);
+  }
+  const sourceBadge = document.createElement('span');
+  sourceBadge.textContent = `FROM ${article.source.toUpperCase()}`;
+  imageLink.append(sourceBadge);
+  card.append(imageLink);
+
+  const copy = document.createElement('div');
+  if (index === 0) copy.className = 'story-copy';
+  const meta = document.createElement('p');
+  meta.className = 'story-meta';
+  meta.textContent = `${article.source} · ${newsAge(article.publishedAt)}`;
+  const title = document.createElement('h3');
+  title.textContent = article.title;
+  const readLink = document.createElement('a');
+  readLink.href = article.link;
+  readLink.target = '_blank';
+  readLink.rel = 'noopener noreferrer';
+  readLink.textContent = 'อ่านต้นฉบับที่ BBC Sport →';
+  copy.append(meta, title, readLink);
+  card.append(copy);
+  return card;
+};
+
+const loadFootballNews = async () => {
+  if (!footballNewsGrid) return;
+  footballNewsGrid.setAttribute('aria-busy', 'true');
+  try {
+    const response = await fetch('/api/football/news');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'โหลดข่าวฟุตบอลไม่สำเร็จ');
+    const articles = data.articles || [];
+    if (!articles.length) throw new Error('ยังไม่พบข่าวฟุตบอลล่าสุด');
+    footballNewsGrid.replaceChildren(...articles.slice(0, 3).map(makeNewsCard));
+    const refreshedAt = new Date(data.updatedAt);
+    newsUpdated.textContent = `${data.stale ? 'แสดงข่าวที่บันทึกไว้ล่าสุด' : 'อัปเดต'} ${refreshedAt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} · จาก BBC Sport`;
+  } catch (error) {
+    footballNewsGrid.replaceChildren();
+    const state = document.createElement('p');
+    state.className = 'news-state';
+    state.textContent = error.message || 'เชื่อมต่อข่าวฟุตบอลไม่ได้';
+    const retry = document.createElement('button');
+    retry.className = 'fixture-retry';
+    retry.type = 'button';
+    retry.textContent = 'ลองโหลดข่าวอีกครั้ง';
+    retry.onclick = loadFootballNews;
+    footballNewsGrid.append(state, retry);
+    newsUpdated.textContent = 'ข่าวจาก BBC Sport';
+  } finally {
+    footballNewsGrid.setAttribute('aria-busy', 'false');
+  }
+};
+
 const updateWalletControls = (authenticated) => {
   walletBalanceLabel.textContent = `${formatCredits(walletBalance)} เครดิต`;
   walletStatus.textContent = authenticated
@@ -524,6 +605,8 @@ const restoreSession = async () => {
 };
 restoreSession();
 loadFixtures();
+loadFootballNews();
+window.setInterval(loadFootballNews, 15 * 60 * 1000);
 
 authForm.onsubmit = async (event) => {
   event.preventDefault();

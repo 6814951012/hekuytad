@@ -13,6 +13,75 @@ const fixtureLeagues = [
 const fixturesCacheMs = 5 * 60 * 1000;
 let fixturesCache;
 let fixturesRequest;
+const footballNewsFeedUrl = "https://feeds.bbci.co.uk/sport/football/rss.xml";
+const footballNewsCacheMs = 15 * 60 * 1000;
+let footballNewsCache;
+let footballNewsRequest;
+
+const decodeXml = (value = "") => value
+  .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+  .replace(/&amp;/g, "&")
+  .replace(/&lt;/g, "<")
+  .replace(/&gt;/g, ">")
+  .replace(/&quot;/g, '"')
+  .replace(/&#39;|&apos;/g, "'")
+  .trim();
+
+const xmlTag = (xml, tag) => {
+  const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = xml.match(new RegExp(`<${escapedTag}\\b[^>]*>([\\s\\S]*?)<\\/${escapedTag}>`, "i"));
+  return match ? decodeXml(match[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ")) : "";
+};
+
+const xmlImage = (item) => {
+  const candidates = [
+    item.match(/<(?:media:thumbnail|media:content)\b[^>]*\burl=["']([^"']+)["']/i)?.[1],
+    item.match(/<enclosure\b[^>]*\burl=["']([^"']+)["']/i)?.[1],
+  ];
+  return candidates.map((url) => decodeXml(url || "")).find((url) => /^https:\/\/(?:[a-z0-9-]+\.)*(?:bbc\.co\.uk|bbc\.com|bbci\.co\.uk)\//i.test(url)) || "";
+};
+
+const loadFootballNews = async () => {
+  const response = await fetch(footballNewsFeedUrl, { signal: AbortSignal.timeout(10000) });
+  if (!response.ok) throw new Error(`BBC Sport feed returned ${response.status}`);
+  const xml = await response.text();
+  const articles = [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)].map((match) => {
+    const item = match[1];
+    const link = xmlTag(item, "link");
+    if (!/^https:\/\/(www\.)?bbc\.(co\.uk|com)\/sport\//i.test(link)) return null;
+    return {
+      title: xmlTag(item, "title"),
+      link,
+      image: xmlImage(item),
+      publishedAt: xmlTag(item, "pubDate"),
+      source: "BBC Sport",
+    };
+  }).filter((article) => article?.title && article.link).slice(0, 12);
+
+  if (!articles.length) throw new Error("BBC Sport feed contained no usable football headlines");
+  return articles;
+};
+
+const getFootballNews = async (req, res, next) => {
+  try {
+    if (footballNewsCache && footballNewsCache.expiresAt > Date.now()) {
+      return res.json({ source: "BBC Sport", updatedAt: footballNewsCache.updatedAt, articles: footballNewsCache.articles });
+    }
+    if (!footballNewsRequest) {
+      footballNewsRequest = loadFootballNews().then((articles) => {
+        footballNewsCache = { articles, updatedAt: new Date().toISOString(), expiresAt: Date.now() + footballNewsCacheMs };
+        return footballNewsCache;
+      }).finally(() => { footballNewsRequest = null; });
+    }
+    const data = await footballNewsRequest;
+    res.json({ source: "BBC Sport", updatedAt: data.updatedAt, articles: data.articles });
+  } catch (error) {
+    if (footballNewsCache) {
+      return res.json({ source: "BBC Sport", updatedAt: footballNewsCache.updatedAt, articles: footballNewsCache.articles, stale: true });
+    }
+    next(error);
+  }
+};
 
 const getLeagues = async (req, res, next) => {
   try { res.json(await League.find().sort({ name: 1 })); }
@@ -88,4 +157,4 @@ const getStanding = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
-module.exports = { getLeagues, getMatches, getFixtures, getStanding };
+module.exports = { getLeagues, getMatches, getFixtures, getFootballNews, getStanding };
