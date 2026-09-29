@@ -1194,3 +1194,8 @@ footer {
     margin-right: 18px;
   }
 }
+
+.name-field.hidden { display: none; }
+.auth-error { min-height: 1.25em; margin: 0; color: #ff9a88; font-size: 0.9rem; }
+.login-modal button:disabled { opacity: 0.65; cursor: wait; }
+

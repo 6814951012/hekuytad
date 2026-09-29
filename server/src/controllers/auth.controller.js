@@ -10,7 +10,8 @@ const createToken = (user) => jwt.sign(
 );
 
 const validInput = (name, email, password) => {
-  if (!name || !email || !password) return "Please complete every field";
+  if (typeof name !== "string" || typeof email !== "string" || typeof password !== "string" || !name.trim() || !email.trim() || !password) return "Please complete every field";
+  if (name.trim().length < 2 || name.trim().length > 60) return "Name must contain 2 to 60 characters";
   if (!/^\S+@\S+\.\S+$/.test(email)) return "Please enter a valid email address";
   if (password.length < 8) return "Password must contain at least 8 characters";
   return null;
@@ -28,14 +29,17 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({ name, email, password: hashedPassword });
     res.status(201).json({ user: publicUser(user), token: createToken(user) });
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.code === 11000) return res.status(409).json({ message: "This email is already registered" });
+    next(error);
+  }
 };
 
 const login = async (req, res, next) => {
   try {
     const email = req.body.email?.trim().toLowerCase();
     const { password } = req.body;
-    if (!email || !password) return res.status(400).json({ message: "Email and password are required" });
+    if (typeof email !== "string" || typeof password !== "string" || !email || !password) return res.status(400).json({ message: "Email and password are required" });
     const user = await User.findOne({ email }).select("+password");
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Email or password is incorrect" });

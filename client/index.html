@@ -29,7 +29,7 @@
 
       <div class="top-actions">
         <button class="refresh-btn" id="refresh-status" type="button">อัพเดท</button>
-        <button class="login-trigger" id="login-button" type="button">เข้าสู่ระบบ <span>↗</span></button>
+        <button class="login-trigger" id="login-button" type="button">เข้าสู่ระบบ / สมัครสมาชิก <span>↗</span></button>
       </div>
     </header>
 
@@ -377,23 +377,28 @@
           <span class="brand-ball">5</span>
           <span>แทง<span class="lime">5พอล</span></span>
         </a>
-        <p class="eyebrow dark">WELCOME BACK</p>
+        <p class="eyebrow dark" id="auth-eyebrow">WELCOME BACK</p>
         <h2 id="login-title">กลับเข้าสู่<br /><em>เกมของคุณ</em></h2>
-        <p class="modal-sub">ล็อกอินเพื่อบันทึกบิลเดิมพันและติดตามทีมโปรด</p>
+        <p class="modal-sub" id="auth-description">ล็อกอินเพื่อบันทึกบิลเดิมพันและติดตามทีมโปรด</p>
 
         <form id="login-form">
+          <label class="name-field hidden">
+            ชื่อที่ใช้แสดง
+            <input type="text" name="name" placeholder="ชื่อของคุณ" minlength="2" maxlength="60" autocomplete="name" />
+          </label>
           <label>
             อีเมล
-            <input type="email" name="email" placeholder="you@email.com" required />
+            <input type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
           </label>
           <label>
             รหัสผ่าน
-            <input type="password" name="password" placeholder="••••••••" required />
+            <input type="password" name="password" placeholder="อย่างน้อย 8 ตัวอักษร" minlength="8" autocomplete="current-password" required />
           </label>
+          <p class="auth-error" id="auth-error" role="alert" aria-live="polite"></p>
           <button class="primary-button" type="submit">เข้าสู่ระบบ <span>→</span></button>
         </form>
 
-        <p class="register-copy">ยังไม่มีบัญชี? <button type="button" class="inline-link" id="register-link">สมัครสมาชิกฟรี</button></p>
+        <p class="register-copy" id="auth-switch">ยังไม่มีบัญชี? <button type="button" class="inline-link" id="register-link">สมัครสมาชิกฟรี</button></p>
       </section>
     </div>
 
