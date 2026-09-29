@@ -21,9 +21,15 @@ const placeBetButton = document.querySelector('#place-bet');
 const betMessage = document.querySelector('#bet-message');
 const betHistory = document.querySelector('#bet-history');
 const walletTransactions = document.querySelector('#wallet-transactions');
+const matchesGrid = document.querySelector('#matches-grid');
+const leagueFilters = document.querySelector('#league-filters');
+const fixtureTicker = document.querySelector('#fixture-ticker');
+const fixtureSeason = document.querySelector('#fixture-season');
 let authMode = 'login';
 let walletBalance = 0;
 let walletBusy = false;
+let fixtures = [];
+let activeLeagueFilter = 'all';
 
 let selection = null;
 
@@ -90,32 +96,34 @@ const updateSlip = () => {
   updateWalletControls(Boolean(getStoredUser()));
 };
 
-document.querySelectorAll('[data-odd]').forEach((button) => {
-  button.onclick = () => {
-    const odd = button.dataset.odd.match(/^(.+?)\s+([\d.]+)$/);
-    const teams = [...button.closest('.match-card').querySelectorAll('.team-side span')].map((team) => team.textContent.trim());
-    const matchName = teams.join(' vs ');
-    selection = { matchName, outcome: `${odd[1]} ชนะ`, label: `${matchName}: ${odd[1]} ชนะ`, price: Number(odd[2]) };
-    document.querySelectorAll('.odds button').forEach((element) => element.classList.remove('picked'));
-    button.classList.add('picked');
-    slip.classList.add('open');
-    betMessage.textContent = '';
-    updateSlip();
+matchesGrid.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-fixture-id]');
+  if (!button || !matchesGrid.contains(button)) return;
+  const fixture = fixtures.find((item) => String(item.id) === button.dataset.fixtureId);
+  if (!fixture) return;
+
+  const matchName = `${fixture.homeTeam.name} vs ${fixture.awayTeam.name}`;
+  const outcome = button.dataset.outcome;
+  selection = {
+    fixtureId: fixture.id,
+    matchName,
+    outcome,
+    label: `${matchName}: ${outcome}`,
+    price: Number(button.dataset.price),
   };
+  matchesGrid.querySelectorAll('.odds button').forEach((element) => element.classList.remove('picked'));
+  button.classList.add('picked');
+  slip.classList.add('open');
+  betMessage.textContent = '';
+  updateSlip();
 });
 
-document.querySelectorAll('.bet-match').forEach((button) => {
-  button.onclick = () => {
-    selection = {
-      matchName: button.dataset.match,
-      outcome: button.dataset.selection,
-      label: `${button.dataset.match}: ${button.dataset.selection}`,
-      price: Number(button.dataset.odds),
-    };
-    slip.classList.add('open');
-    betMessage.textContent = '';
-    updateSlip();
-  };
+leagueFilters.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-league-filter]');
+  if (!button) return;
+  activeLeagueFilter = button.dataset.leagueFilter;
+  leagueFilters.querySelectorAll('.filter').forEach((filter) => filter.classList.toggle('active', filter === button));
+  renderFixtures();
 });
 
 stake.oninput = updateSlip;
@@ -145,6 +153,7 @@ placeBetButton.onclick = async () => {
       },
       body: JSON.stringify({
         matchName: selection.matchName,
+        fixtureId: selection.fixtureId,
         selection: selection.outcome,
         odds: selection.price,
         stake: amount,
@@ -261,6 +270,171 @@ const getStoredUser = () => {
 
 const formatCredits = (amount) => new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 }).format(amount || 0);
 
+const leagueNames = {
+  'English Premier League': 'พรีเมียร์ลีก',
+  'Spanish La Liga': 'ลาลีกา',
+  'German Bundesliga': 'บุนเดสลีกา',
+  'Italian Serie A': 'เซเรีย อา',
+  'French Ligue 1': 'ลีกเอิง',
+  'UEFA Champions League': 'ยูฟ่า แชมเปียนส์ลีก',
+};
+
+const createTeamLogo = (team) => {
+  const image = document.createElement('img');
+  image.src = team.logo;
+  image.alt = `${team.name} logo`;
+  image.loading = 'lazy';
+  image.addEventListener('error', () => {
+    const fallback = document.createElement('span');
+    fallback.className = 'team-logo-fallback';
+    fallback.textContent = team.name.slice(0, 2).toUpperCase();
+    image.replaceWith(fallback);
+  }, { once: true });
+  return image;
+};
+
+const formatKickoff = (date) => new Intl.DateTimeFormat('th-TH', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'Asia/Bangkok',
+}).format(new Date(date));
+
+const renderLeagueFilters = () => {
+  const leagues = [...new Map(fixtures.map((fixture) => [fixture.league.id, fixture.league])).values()];
+  leagueFilters.replaceChildren();
+  const allButton = document.createElement('button');
+  allButton.className = `filter${activeLeagueFilter === 'all' ? ' active' : ''}`;
+  allButton.type = 'button';
+  allButton.dataset.leagueFilter = 'all';
+  allButton.textContent = `ทุกลีก ${fixtures.length}`;
+  leagueFilters.append(allButton);
+
+  leagues.forEach((league) => {
+    const button = document.createElement('button');
+    button.className = `filter${activeLeagueFilter === league.id ? ' active' : ''}`;
+    button.type = 'button';
+    button.dataset.leagueFilter = league.id;
+    button.textContent = leagueNames[league.name] || league.name;
+    leagueFilters.append(button);
+  });
+};
+
+const renderFixtures = () => {
+  const visibleFixtures = fixtures.filter((fixture) => activeLeagueFilter === 'all' || fixture.league.id === activeLeagueFilter);
+  matchesGrid.replaceChildren();
+  matchesGrid.setAttribute('aria-busy', 'false');
+
+  if (!visibleFixtures.length) {
+    const state = document.createElement('p');
+    state.className = 'fixtures-state';
+    state.textContent = fixtures.length ? 'ลีกนี้ยังไม่มีโปรแกรมถัดไป' : 'ยังไม่พบโปรแกรมแข่งขันถัดไป';
+    matchesGrid.append(state);
+    return;
+  }
+
+  visibleFixtures.forEach((fixture) => {
+    const card = document.createElement('article');
+    card.className = 'match-card fixture-card';
+
+    const leagueLine = document.createElement('div');
+    leagueLine.className = 'league-line fixture-league-line';
+    if (fixture.league.logo) {
+      const leagueLogo = document.createElement('img');
+      leagueLogo.className = 'league-badge';
+      leagueLogo.src = fixture.league.logo;
+      leagueLogo.alt = '';
+      leagueLogo.loading = 'lazy';
+      leagueLogo.addEventListener('error', () => leagueLogo.remove(), { once: true });
+      leagueLine.append(leagueLogo);
+    }
+    const leagueName = document.createElement('span');
+    leagueName.textContent = leagueNames[fixture.league.name] || fixture.league.name;
+    const kickoff = document.createElement('time');
+    kickoff.dateTime = fixture.matchDate;
+    kickoff.textContent = formatKickoff(fixture.matchDate);
+    leagueLine.append(leagueName, kickoff);
+
+    const teams = document.createElement('div');
+    teams.className = 'simple-teams';
+    const home = document.createElement('div');
+    home.className = 'team-side';
+    home.append(createTeamLogo(fixture.homeTeam));
+    const homeName = document.createElement('span');
+    homeName.textContent = fixture.homeTeam.name;
+    home.append(homeName);
+    const versus = document.createElement('strong');
+    versus.textContent = 'VS';
+    const away = document.createElement('div');
+    away.className = 'team-side';
+    away.append(createTeamLogo(fixture.awayTeam));
+    const awayName = document.createElement('span');
+    awayName.textContent = fixture.awayTeam.name;
+    away.append(awayName);
+    teams.append(home, versus, away);
+
+    const oddsLabel = document.createElement('p');
+    oddsLabel.className = 'fixture-odds-label';
+    oddsLabel.textContent = `เลือกผล · รอบ ${fixture.round || '-'}`;
+    const odds = document.createElement('div');
+    odds.className = 'odds';
+    const options = [
+      { code: '1', outcome: `${fixture.homeTeam.name} ชนะ`, price: fixture.odds.home },
+      { code: 'X', outcome: 'เสมอ', price: fixture.odds.draw },
+      { code: '2', outcome: `${fixture.awayTeam.name} ชนะ`, price: fixture.odds.away },
+    ];
+    options.forEach((option) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.fixtureId = fixture.id;
+      button.dataset.outcome = option.outcome;
+      button.dataset.price = option.price;
+      button.setAttribute('aria-label', `${option.outcome} ราคา ${Number(option.price).toFixed(2)}`);
+      const code = document.createElement('small');
+      code.textContent = option.code;
+      button.append(code, document.createTextNode(Number(option.price).toFixed(2)));
+      odds.append(button);
+    });
+
+    card.append(leagueLine, teams, oddsLabel, odds);
+    if (fixture.venue) {
+      const venue = document.createElement('p');
+      venue.className = 'fixture-venue';
+      venue.textContent = fixture.venue;
+      card.append(venue);
+    }
+    matchesGrid.append(card);
+  });
+};
+
+const loadFixtures = async () => {
+  matchesGrid.setAttribute('aria-busy', 'true');
+  try {
+    const response = await fetch('/api/football/fixtures');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'โหลดโปรแกรมแข่งขันไม่สำเร็จ');
+    fixtures = data.fixtures || [];
+    activeLeagueFilter = 'all';
+    fixtureSeason.textContent = `ฤดูกาล ${data.season || '2026-2027'}`;
+    fixtureTicker.textContent = fixtures.length
+      ? `มี ${fixtures.length} คู่ถัดไปจาก ${new Set(fixtures.map((fixture) => fixture.league.id)).size} ลีก`
+      : 'ยังไม่มีโปรแกรมแข่งขันถัดไป';
+    renderLeagueFilters();
+    renderFixtures();
+  } catch (error) {
+    matchesGrid.replaceChildren();
+    matchesGrid.setAttribute('aria-busy', 'false');
+    const state = document.createElement('p');
+    state.className = 'fixtures-state';
+    state.textContent = error.message || 'เชื่อมต่อข้อมูลโปรแกรมแข่งขันไม่ได้';
+    const retry = document.createElement('button');
+    retry.className = 'fixture-retry';
+    retry.type = 'button';
+    retry.textContent = 'ลองโหลดอีกครั้ง';
+    retry.onclick = loadFixtures;
+    matchesGrid.append(state, retry);
+  }
+};
+
 const updateWalletControls = (authenticated) => {
   walletBalanceLabel.textContent = `${formatCredits(walletBalance)} เครดิต`;
   walletStatus.textContent = authenticated
@@ -349,6 +523,7 @@ const restoreSession = async () => {
   }
 };
 restoreSession();
+loadFixtures();
 
 authForm.onsubmit = async (event) => {
   event.preventDefault();

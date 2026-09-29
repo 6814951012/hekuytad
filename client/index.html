@@ -85,11 +85,10 @@
         </aside>
 
         <div class="live-ticker">
-          <span class="ticker-label">LIVE</span>
-          <span>Barcelona 2 - 1 Milan</span>
-          <span class="ticker-time">63'</span>
+          <span class="ticker-label">FIXTURES</span>
+          <span id="fixture-ticker">กำลังโหลดตารางแข่งขัน...</span>
           <span class="dot-sep">•</span>
-          <span>มี 18 คู่รอเปิดราคา</span>
+          <span>ฤดูกาล 2026–2027</span>
         </div>
       </section>
 
@@ -100,108 +99,17 @@
             <h2>คู่บอล <em>เดือด</em></h2>
           </div>
           <div class="date-switcher">
-            <button type="button">‹</button>
-            <strong>จันทร์, 22 ก.ย.</strong>
-            <button type="button">›</button>
+            <strong id="fixture-season">ตารางแข่งขันฤดูกาล 2026–2027</strong>
           </div>
         </div>
 
-        <div class="filter-row" aria-label="ตัวกรองคู่บอล">
-          <button class="filter active" type="button">ทั้งหมด <span>18</span></button>
-          <button class="filter" type="button">กำลังแข่ง <span>3</span></button>
-          <button class="filter" type="button">พรีเมียร์ลีก</button>
-          <button class="filter" type="button">UCL</button>
-          <button class="filter" type="button">ลาลีกา</button>
-          <button class="filter" type="button">ลีกเอิง</button>
+        <div class="filter-row" id="league-filters" aria-label="ตัวกรองลีก">
+          <button class="filter active" type="button" data-league-filter="all">ทุกลีก</button>
         </div>
+        <p class="fixture-note">โปรแกรมและโลโก้จาก TheSportsDB · ราคาเป็นอัตราทดลองสำหรับเครดิตจำลอง ไม่ใช่ราคาจริง</p>
 
-        <div class="matches-grid">
-          <article class="featured-match">
-            <div class="feature-top">
-              <span class="live-pill"><i></i> LIVE • 63'</span>
-              <span>UEFA CHAMPIONS LEAGUE</span>
-            </div>
-            <div class="feature-teams">
-              <div class="club-card barca">
-                <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barcelona logo" />
-                <strong>Barcelona</strong>
-              </div>
-              <div class="score-box">
-                <strong>2 <small>–</small> 1</strong>
-                <span>ครึ่งหลัง</span>
-              </div>
-              <div class="club-card milan">
-                <img src="https://upload.wikimedia.org/wikipedia/en/d/d0/AC_Milan_logo.svg" alt="AC Milan logo" />
-                <strong>AC Milan</strong>
-              </div>
-            </div>
-            <div class="match-stats">
-              <span>ยิงเข้ากรอบ <b>7</b></span>
-              <span class="divider"></span>
-              <span><b>3</b> ยิงเข้ากรอบ</span>
-            </div>
-            <button class="bet-match" type="button" data-match="Barcelona vs AC Milan" data-selection="Barcelona ชนะ" data-odds="1.85">Barcelona ชนะ 1.85 <span>→</span></button>
-          </article>
-
-          <article class="match-card">
-            <div class="league-line"><span class="league-dot england"></span> PREMIER LEAGUE <time>02:00</time></div>
-            <div class="simple-teams">
-              <div class="team-side">
-                <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" alt="Arsenal logo" />
-                <span>Arsenal</span>
-              </div>
-              <strong>VS</strong>
-              <div class="team-side">
-                <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Liverpool_FC.svg" alt="Liverpool logo" />
-                <span>Liverpool</span>
-              </div>
-            </div>
-            <div class="odds">
-              <button type="button" data-odd="Arsenal 2.08"><small>1</small>2.08</button>
-              <button type="button" data-odd="Draw 3.45"><small>X</small>3.45</button>
-              <button type="button" data-odd="Liverpool 3.12"><small>2</small>3.12</button>
-            </div>
-          </article>
-
-          <article class="match-card">
-            <div class="league-line"><span class="league-dot spain"></span> LA LIGA <time>03:00</time></div>
-            <div class="simple-teams">
-              <div class="team-side">
-                <img src="https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" alt="Real Madrid logo" />
-                <span>Real Madrid</span>
-              </div>
-              <strong>VS</strong>
-              <div class="team-side">
-                <img src="https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg" alt="Atletico Madrid logo" />
-                <span>Atletico</span>
-              </div>
-            </div>
-            <div class="odds">
-              <button type="button" data-odd="Real Madrid 1.72"><small>1</small>1.72</button>
-              <button type="button" data-odd="Draw 3.55"><small>X</small>3.55</button>
-              <button type="button" data-odd="Atleti 4.10"><small>2</small>4.10</button>
-            </div>
-          </article>
-
-          <article class="match-card">
-            <div class="league-line"><span class="league-dot italy"></span> SERIE A <time>04:30</time></div>
-            <div class="simple-teams">
-              <div class="team-side">
-                <img src="https://upload.wikimedia.org/wikipedia/en/0/05/Inter_Milan.svg" alt="Inter Milan logo" />
-                <span>Inter</span>
-              </div>
-              <strong>VS</strong>
-              <div class="team-side">
-                <img src="https://upload.wikimedia.org/wikipedia/en/1/1c/Napoli_logo.svg" alt="Napoli logo" />
-                <span>Napoli</span>
-              </div>
-            </div>
-            <div class="odds">
-              <button type="button" data-odd="Inter 1.87"><small>1</small>1.87</button>
-              <button type="button" data-odd="Draw 3.30"><small>X</small>3.30</button>
-              <button type="button" data-odd="Napoli 4.25"><small>2</small>4.25</button>
-            </div>
-          </article>
+        <div class="matches-grid" id="matches-grid" aria-live="polite" aria-busy="true">
+          <p class="fixtures-state">กำลังโหลดโปรแกรมแข่งขันจริง...</p>
         </div>
       </section>
 
